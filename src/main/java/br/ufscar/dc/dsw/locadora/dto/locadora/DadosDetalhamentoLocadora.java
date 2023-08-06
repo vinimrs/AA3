@@ -1,19 +1,16 @@
-package br.ufscar.dc.dsw.locadora.dto.cliente;
+package br.ufscar.dc.dsw.locadora.dto.locadora;
 
-import br.ufscar.dc.dsw.locadora.domain.Cliente;
 import br.ufscar.dc.dsw.locadora.domain.Locacao;
-import br.ufscar.dc.dsw.locadora.domain.Sexo;
+import br.ufscar.dc.dsw.locadora.domain.Locadora;
 
-import java.time.LocalDate;
 import java.util.List;
 
-public record DadosDetalhamentoCliente(
+public record DadosDetalhamentoLocadora(
     Long id, String username, String name, String email,
-    String cpf, String phoneNumber, Sexo sex, LocalDate birthDate, List<Locacao> locacoes) {
-  public DadosDetalhamentoCliente(Cliente cliente) {
-    this(cliente.getId(), cliente.getUsername(), cliente.getName(), cliente.getEmail(),
-        cliente.getCpf(), cliente.getPhoneNumber(), cliente.getSex(), cliente.getBirthDate(),
-        cliente.getLocacoes());
+    String cnpj, String city, List<Locacao> locacoes) {
+  public DadosDetalhamentoLocadora(Locadora locadora) {
+    this(locadora.getId(), locadora.getUsername(), locadora.getName(), locadora.getEmail(),
+        locadora.getCnpj(), locadora.getCity(), locadora.getLocacoes());
   }
 
 }

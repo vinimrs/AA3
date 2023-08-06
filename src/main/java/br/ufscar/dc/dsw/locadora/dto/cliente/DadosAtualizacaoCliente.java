@@ -21,10 +21,10 @@ public record DadosAtualizacaoCliente(
     @Email
     String email,
 
-    @Size(min = 14, max = 14)
+    @Size(min = 15, max = 15, message = "{Size.cliente.CPF}")
     String cpf,
 
-    @Size(min = 15, max = 15)
+    @Size(min = 14, max = 14, message = "{Size.cliente.phone}")
     String phoneNumber,
 
     @Enumerated(EnumType.STRING)

@@ -32,11 +32,11 @@ public record DadosCadastroCliente(
     String email,
 
     @NotBlank
-    @Size(min = 15, max = 15)
+    @Size(min = 15, max = 15, message = "{Size.cliente.CPF}")
     String cpf,
 
     @NotBlank
-    @Size(min = 14, max = 14)
+    @Size(min = 14, max = 14, message = "{Size.cliente.phone}")
     String phoneNumber,
 
     @NotNull

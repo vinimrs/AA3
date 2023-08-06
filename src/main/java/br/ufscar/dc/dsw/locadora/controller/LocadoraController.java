@@ -1,87 +1,81 @@
-//package br.ufscar.dc.dsw.locadora.locadora.controller;
-//
-//import br.ufscar.dc.dsw.domain.Locadora;
-//import br.ufscar.dc.dsw.service.spec.ILocadoraService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.ModelMap;
-//import org.springframework.validation.BindingResult;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-//
-//import jakarta.validation.Valid;
-//
-//@Controller
-//@RequestMapping("/locadoras")
-//public class LocadoraController {
-//
-//
-//  @Autowired
-//  private ILocadoraService service;
-//
-//  @Autowired
-//  private BCryptPasswordEncoder encoder;
-//
-//
-//  @GetMapping("/cadastrar")
-//  public String cadastrar(Locadora locadora) {
-//    return "locadora/cadastro";
-//  }
-//
-//  @GetMapping("/listar")
-//  public String listar(ModelMap model) {
-//    model.addAttribute("locadoras", service.buscarTodos());
-//    return "locadora/lista";
-//  }
-//
-//  @PostMapping("/salvar")
-//  public String salvar(@Valid Locadora locadora, BindingResult result, RedirectAttributes attr) {
-//
-//    if (result.hasErrors()) {
-//      return "locadora/cadastro";
-//    }
-//
-//    locadora.setPassword(encoder.encode(locadora.getPassword()));
-//    service.salvar(locadora);
-//    attr.addFlashAttribute("sucess", "locadora.create.sucess");
-//
-//
-//    return "redirect:/locadoras/listar";
-//  }
-//
-//  @GetMapping("/editar/{id}")
-//  public String preEditar(@PathVariable("id") Long id, ModelMap model) {
-//    model.addAttribute("locadora", service.buscarPorId(id));
-//    return "locadora/cadastro";
-//  }
-//
-//  @PostMapping("/editar")
-//  public String editar(@Valid Locadora locadora, BindingResult result, RedirectAttributes attr) {
-//
-//
-//    // Apenas rejeita se o problema não for com o CNPJ, EMAIL ou USERNAME (Read-onlys)
-//    if (result.getFieldErrorCount() > 3
-//        || result.getFieldError("cnpj") == null
-//        || result.getFieldError("email") == null
-//        || result.getFieldError("username") == null) {
-//      return "locadora/cadastro";
-//    }
-//    service.salvar(locadora);
-//    attr.addFlashAttribute("sucess", "locadora.edit.sucess");
-//    return "redirect:/locadoras/listar";
-//  }
-//
-//  @GetMapping("/excluir/{id}")
-//  public String excluir(@PathVariable("id") Long id, ModelMap model) {
-////		if (service.locadoraTemLocacoes(id)) {
-////			model.addAttribute("fail", "locadora.delete.fail");
-////		} else {
-//    service.excluir(id);
-//    model.addAttribute("sucess", "locadora.delete.sucess");
-//    return listar(model);
-//  }
-//}
+package br.ufscar.dc.dsw.locadora.controller;
+
+import br.ufscar.dc.dsw.locadora.domain.Locadora;
+import br.ufscar.dc.dsw.locadora.dto.RetornoComMessagem;
+import br.ufscar.dc.dsw.locadora.dto.locadora.DadosAtualizacaoLocadora;
+import br.ufscar.dc.dsw.locadora.dto.locadora.DadosCadastroLocadora;
+import br.ufscar.dc.dsw.locadora.dto.locadora.DadosDetalhamentoLocadora;
+import br.ufscar.dc.dsw.locadora.service.spec.ILocadoraService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+@RestController
+@RequestMapping("/locadoras")
+public class LocadoraController {
+
+  @Autowired
+  private ILocadoraService service;
+
+  @Autowired
+  private ResourceBundle messageBundle;
+
+  private String getMessage(String key, Locale locale) {
+    return ResourceBundle.getBundle(messageBundle.getBaseBundleName(), locale).getString(key);
+  }
+
+  @GetMapping
+  public ResponseEntity<Page<DadosDetalhamentoLocadora>> listar(@PageableDefault(size = 10, sort = {"username"}) Pageable pageable) {
+    Page<DadosDetalhamentoLocadora> locadoras = service.findAll(pageable).map(DadosDetalhamentoLocadora::new);
+
+    return ResponseEntity.ok().body(locadoras);
+  }
+
+  @PostMapping
+  @Transactional
+  public ResponseEntity<RetornoComMessagem> cadastrar(@RequestBody @Valid DadosCadastroLocadora dados, UriComponentsBuilder uriBuilder, final Locale locale) {
+    Locadora locadora = service.save(dados);
+    URI uri = uriBuilder.path("/medicos/{id}").buildAndExpand(locadora.getId()).toUri();
+
+    String message = getMessage("locadoras.create.success", locale);
+
+    return ResponseEntity.created(uri).body(new RetornoComMessagem(message, new DadosDetalhamentoLocadora(locadora)));
+  }
+
+  @PutMapping("/{id}")
+  @Transactional
+  public ResponseEntity<RetornoComMessagem> atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoLocadora dados, final Locale locale) {
+    Locadora locadora = service.update(id, dados);
+    String message = getMessage("locadoras.update.success", locale);
+
+    return ResponseEntity.ok().body(new RetornoComMessagem(message, new DadosDetalhamentoLocadora(locadora)));
+  }
+
+
+  @DeleteMapping("/{id}")
+  @Transactional
+  public ResponseEntity<RetornoComMessagem> deletar(@PathVariable Long id, final Locale locale) {
+    Locadora locadora = service.delete(id);
+
+    String message = getMessage("locadoras.delete.success", locale);
+
+    return ResponseEntity.ok().body(new RetornoComMessagem(message, new DadosDetalhamentoLocadora(locadora)));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<DadosDetalhamentoLocadora> detalhar(@PathVariable Long id) {
+    Locadora locadora = service.findById(id);
+
+    return ResponseEntity.ok().body(new DadosDetalhamentoLocadora(locadora));
+  }
+}

@@ -1,20 +1,20 @@
 package br.ufscar.dc.dsw.locadora.service.spec;
 
-import br.ufscar.dc.dsw.locadora.domain.Cliente;
-import br.ufscar.dc.dsw.locadora.dto.cliente.DadosAtualizacaoCliente;
-import br.ufscar.dc.dsw.locadora.dto.cliente.DadosCadastroCliente;
+import br.ufscar.dc.dsw.locadora.domain.Locadora;
+import br.ufscar.dc.dsw.locadora.dto.locadora.DadosAtualizacaoLocadora;
+import br.ufscar.dc.dsw.locadora.dto.locadora.DadosCadastroLocadora;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface IClienteService {
+public interface ILocadoraService {
 
-  Cliente findById(Long id);
+  Locadora findById(Long id);
 
-  Page<Cliente> findAll(Pageable pageable);
+  Page<Locadora> findAll(Pageable pageable);
 
-  Cliente save(DadosCadastroCliente cliente);
+  Locadora save(DadosCadastroLocadora locadora);
 
-  Cliente delete(Long id);
+  Locadora delete(Long id);
 
-  Cliente update(Long id, DadosAtualizacaoCliente dados);
+  Locadora update(Long id, DadosAtualizacaoLocadora dados);
 }

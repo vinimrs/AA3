@@ -1,20 +1,14 @@
-package br.ufscar.dc.dsw.locadora.dto.cliente;
+package br.ufscar.dc.dsw.locadora.dto.locadora;
 
-import br.ufscar.dc.dsw.locadora.domain.Sexo;
-import br.ufscar.dc.dsw.locadora.validation.BirthDate;
 import br.ufscar.dc.dsw.locadora.validation.Name;
+import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueCNPJ;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueEmail;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueUsername;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDate;
-
-public record DadosCadastroCliente(
+public record DadosCadastroLocadora(
     @UniqueUsername(message = "{Unique.user.username}")
     @NotBlank
     String username,
@@ -31,19 +25,11 @@ public record DadosCadastroCliente(
     @Email
     String email,
 
+    @UniqueCNPJ(message = "{Unique.locadora.CNPJ}")
     @NotBlank
-    @Size(min = 15, max = 15)
-    String cpf,
+    @Size(min = 18, max = 18, message = "{Size.locadora.CNPJ}")
+    String cnpj,
 
     @NotBlank
-    @Size(min = 14, max = 14)
-    String phoneNumber,
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    Sexo sex,
-
-    @NotNull
-    @BirthDate(message = "{BirthDate.cliente}")
-    LocalDate birthDate) {
+    String city) {
 }

@@ -2,11 +2,10 @@ package br.ufscar.dc.dsw.locadora.validation.uniques;
 
 import br.ufscar.dc.dsw.locadora.domain.Cliente;
 import br.ufscar.dc.dsw.locadora.repository.IClienteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class UniqueCPFValidator implements ConstraintValidator<UniqueCPF, String> {
@@ -16,7 +15,6 @@ public class UniqueCPFValidator implements ConstraintValidator<UniqueCPF, String
 
   @Override
   public boolean isValid(String CPF, ConstraintValidatorContext context) {
-    System.out.println("Validating CPF: " + CPF);
     if (repository != null) {
       Cliente cliente = repository.findByCpf(CPF);
       return cliente == null;
