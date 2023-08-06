@@ -9,7 +9,6 @@ public class NameValidator implements ConstraintValidator<Name, String> {
 
   @Override
   public boolean isValid(String name, ConstraintValidatorContext context) {
-    System.out.println("Validating name: " + name);
     /*
      * ^ - start of string
      * [a-zA-Z]{4,} - 4 or more ASCII letters

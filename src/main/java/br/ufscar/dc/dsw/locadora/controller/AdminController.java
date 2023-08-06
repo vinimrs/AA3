@@ -45,7 +45,7 @@ public class AdminController {
   @Transactional
   public ResponseEntity<RetornoComMessagem> cadastrar(@RequestBody @Valid DadosCadastroAdmin dados, UriComponentsBuilder uriBuilder, final Locale locale) {
     Admin admin = service.save(dados);
-    URI uri = uriBuilder.path("/medicos/{id}").buildAndExpand(admin.getId()).toUri();
+    URI uri = uriBuilder.path("/admins/{id}").buildAndExpand(admin.getId()).toUri();
 
     String message = getMessage("admins.create.success", locale);
 

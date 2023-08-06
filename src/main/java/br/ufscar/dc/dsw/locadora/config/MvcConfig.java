@@ -18,4 +18,5 @@ public class MvcConfig {
   public LocaleResolver sessionLocaleResolver() {
     return new AcceptHeaderResolver();
   }
+
 }

@@ -1,6 +1,9 @@
 package br.ufscar.dc.dsw.locadora.validation.classlevel;
 
+import br.ufscar.dc.dsw.locadora.domain.Cliente;
 import br.ufscar.dc.dsw.locadora.domain.Locacao;
+import br.ufscar.dc.dsw.locadora.dto.locacao.DadosCadastroLocacao;
+import br.ufscar.dc.dsw.locadora.repository.IClienteRepository;
 import br.ufscar.dc.dsw.locadora.repository.ILocacaoRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -10,20 +13,24 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class UniqueDataHourClientValidator implements ConstraintValidator<ValidLocacao, Locacao> {
+public class UniqueDataHourClientRegisterValidator implements ConstraintValidator<ValidCadastroLocacao, DadosCadastroLocacao> {
 
   @Autowired
   private ILocacaoRepository repository;
 
+  @Autowired
+  private IClienteRepository clienteRepository;
+
   @Override
-  public boolean isValid(Locacao locacao, ConstraintValidatorContext context) {
+  public boolean isValid(DadosCadastroLocacao locacao, ConstraintValidatorContext context) {
     if (repository != null) {
 
       final boolean[] isValid = {true};
 
-      List<Locacao> locacoes = repository.findAllByClient(locacao.getClient());
+      Cliente cliente = clienteRepository.getReferenceById(locacao.clientId());
+      List<Locacao> locacoes = repository.findAllByClient(cliente);
       locacoes.forEach(locacao1 -> {
-        if (locacao1.getDate().equals(locacao.getDate()) && locacao1.getHour().equals(locacao.getHour())) {
+        if (locacao1.getDate().equals(locacao.date()) && locacao1.getHour().equals(locacao.hour())) {
           isValid[0] = false;
         }
       });

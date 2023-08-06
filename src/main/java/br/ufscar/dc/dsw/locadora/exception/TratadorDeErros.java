@@ -58,8 +58,6 @@ public class TratadorDeErros {
 
     Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
 
-    System.out.println(constraintViolations);
-
     List<DadosErroValidacao> messages = new ArrayList<>(constraintViolations.size());
 
     constraintViolations.forEach(constraintViolation -> {

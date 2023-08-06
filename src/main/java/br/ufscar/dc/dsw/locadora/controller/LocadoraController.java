@@ -47,7 +47,7 @@ public class LocadoraController {
   @Transactional
   public ResponseEntity<RetornoComMessagem> cadastrar(@RequestBody @Valid DadosCadastroLocadora dados, UriComponentsBuilder uriBuilder, final Locale locale) {
     Locadora locadora = service.save(dados);
-    URI uri = uriBuilder.path("/medicos/{id}").buildAndExpand(locadora.getId()).toUri();
+    URI uri = uriBuilder.path("/locadoras/{id}").buildAndExpand(locadora.getId()).toUri();
 
     String message = getMessage("locadoras.create.success", locale);
 

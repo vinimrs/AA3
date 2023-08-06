@@ -6,11 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface ILocadoraRepository extends JpaRepository<Locadora, Long> {
-  Collection<Locadora> findAllByCnpj(String cnpj);
+  List<Locadora> findAllByCnpj(String cnpj);
 
   Locadora findByCnpj(String cnpj);
 

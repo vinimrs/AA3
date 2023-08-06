@@ -60,7 +60,6 @@ public class AdminService implements IAdminService {
   public Admin update(Long id, DadosAtualizacaoAdmin dados) {
     Admin admin = repository.findById(id).orElse(null);
 
-    System.out.println(admin);
     if (admin == null) {
       throw new EntityNotFoundException();
     }

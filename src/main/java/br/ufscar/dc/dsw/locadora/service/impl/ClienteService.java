@@ -59,7 +59,6 @@ public class ClienteService implements IClienteService {
   public Cliente update(Long id, DadosAtualizacaoCliente dados) {
     Cliente cliente = repository.findById(id).orElse(null);
 
-    System.out.println(cliente);
     if (cliente == null) {
       throw new EntityNotFoundException();
     }

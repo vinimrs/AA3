@@ -45,7 +45,7 @@ public class ClienteController {
   @Transactional
   public ResponseEntity<RetornoComMessagem> cadastrar(@RequestBody @Valid DadosCadastroCliente dados, UriComponentsBuilder uriBuilder, final Locale locale) {
     Cliente cliente = service.save(dados);
-    URI uri = uriBuilder.path("/medicos/{id}").buildAndExpand(cliente.getId()).toUri();
+    URI uri = uriBuilder.path("/clientes/{id}").buildAndExpand(cliente.getId()).toUri();
 
     String message = getMessage("clientes.create.success", locale);
 
