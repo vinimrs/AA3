@@ -11,7 +11,7 @@
 	<groupId>br.ufscar.dc.dsw</groupId>
 	<artifactId>locadora</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>locadora</name>
+	<name>Locadora DSW1</name>
 	<description>Locadora virtual de bicicletas.</description>
 	<properties>
 		<java.version>20</java.version>
