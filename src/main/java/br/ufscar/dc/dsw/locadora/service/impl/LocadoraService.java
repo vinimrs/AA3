@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -93,6 +94,17 @@ public class LocadoraService implements ILocadoraService {
     locadora.atualizar(dados);
 
     return locadora;
+  }
+
+  @Override
+  public Page<Locadora> findAllByCity(String city, Pageable pageable) {
+
+    return repository.findAllByCity(city, pageable);
+  }
+
+  @Override
+  public List<String> findAllCities() {
+    return repository.findAllCities();
   }
 
   @Transactional(readOnly = true)

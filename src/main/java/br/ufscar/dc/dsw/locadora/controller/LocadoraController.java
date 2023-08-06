@@ -5,6 +5,7 @@ import br.ufscar.dc.dsw.locadora.dto.RetornoComMessagem;
 import br.ufscar.dc.dsw.locadora.dto.locadora.DadosAtualizacaoLocadora;
 import br.ufscar.dc.dsw.locadora.dto.locadora.DadosCadastroLocadora;
 import br.ufscar.dc.dsw.locadora.dto.locadora.DadosDetalhamentoLocadora;
+import br.ufscar.dc.dsw.locadora.dto.locadora.DadosListagemCidadesLocadora;
 import br.ufscar.dc.dsw.locadora.service.spec.ILocadoraService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -77,5 +79,12 @@ public class LocadoraController {
     Locadora locadora = service.findById(id);
 
     return ResponseEntity.ok().body(new DadosDetalhamentoLocadora(locadora));
+  }
+
+  @GetMapping("/cidades")
+  public ResponseEntity<DadosListagemCidadesLocadora> detalhar() {
+    List<String> cidades = service.findAllCities();
+
+    return ResponseEntity.ok().body(new DadosListagemCidadesLocadora(cidades));
   }
 }
