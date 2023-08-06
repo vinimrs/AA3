@@ -1,101 +1,81 @@
-//package br.ufscar.dc.dsw.locadora.locadora.controller;
-//
-//import br.ufscar.dc.dsw.domain.Cliente;
-//import br.ufscar.dc.dsw.service.spec.IClienteService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.ModelMap;
-//import org.springframework.validation.BindingResult;
-//import org.springframework.web.bind.WebDataBinder;
-//import org.springframework.web.bind.annotation.*;
-//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-//
-//import jakarta.validation.Valid;
-//import java.beans.PropertyEditorSupport;
-//import java.time.LocalDate;
-//import java.time.format.DateTimeFormatter;
-//
-//@Controller
-//@RequestMapping("/clientes")
-//public class ClienteController {
-//
-//  @Autowired
-//  private IClienteService clienteService;
-//
-//  @Autowired
-//  private BCryptPasswordEncoder encoder;
-//
-//  @GetMapping("/listar")
-//  public String listar(ModelMap model) {
-//    model.addAttribute("clientes", clienteService.buscarTodos());
-//    return "cliente/lista";
-//  }
-//
-//  @GetMapping("/cadastrar")
-//  public String cadastrar(Cliente cliente) {
-//    return "cliente/cadastro";
-//  }
-//
-//  @InitBinder
-//  public void initBinder(WebDataBinder binder) {
-//    binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
-//      @Override
-//      public void setAsText(String text) throws IllegalArgumentException {
-//        // Convert the String date from the HTML form to LocalDate
-//        // Adjust the date pattern as per your HTML date input format
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        LocalDate date = LocalDate.parse(text, formatter);
-//        setValue(date);
-//      }
-//    });
-//  }
-//
-//  @PostMapping("/salvar")
-//  public String salvar(@Valid Cliente cliente, BindingResult result, RedirectAttributes attr) {
-//    if (result.hasErrors()) {
-//      return "cliente/cadastro";
-//    }
-//
-//    cliente.setPassword(encoder.encode(cliente.getPassword()));
-//    clienteService.salvar(cliente);
-//    attr.addFlashAttribute("sucess", "cliente.create.success");
-//    return "redirect:/clientes/listar";
-//  }
-//
-//  @GetMapping("/editar/{id}")
-//  public String preEditar(@PathVariable("id") Long id, ModelMap model) {
-//    model.addAttribute("cliente", clienteService.buscarPorId(id));
-//    return "cliente/cadastro";
-//  }
-//
-//  @PostMapping("/editar")
-//  public String editar(@Valid Cliente Cliente, BindingResult result, RedirectAttributes attr) {
-//
-//    // Apenas rejeita se o problema não for com o CPF, EMAIL ou USERNAME (Read-onlys)
-//    if (result.getFieldErrorCount() > 3
-//        || result.getFieldError("cpf") == null
-//        || result.getFieldError("email") == null
-//        || result.getFieldError("username") == null) {
-//      return "cliente/cadastro";
-//    }
-//
-//    clienteService.salvar(Cliente);
-//    attr.addFlashAttribute("sucess", "cliente.edit.sucess");
-//    return "redirect:/clientes/listar";
-//  }
-//
-//  @GetMapping("/excluir/{id}")
-//  public String excluir(@PathVariable("id") Long id, RedirectAttributes attr) {
-//    clienteService.excluir(id);
-//    attr.addFlashAttribute("sucess", "cliente.delete.sucess"); // atributo para enviar mensagem de sucesso no
-//    // redirect
-//    return "redirect:/clientes/listar";
-//  }
-//
-//  // este atrtbuto será geral e poderá ser acessado por todas as views que utilizem este controller
-////	@ModelAttribute("locadoras")
-////	public List<Locadora> listaLocadoras() {
-////		return locadoraService.buscarTodos();
-////	}
-//}
+package br.ufscar.dc.dsw.locadora.controller;
+
+import br.ufscar.dc.dsw.locadora.domain.Cliente;
+import br.ufscar.dc.dsw.locadora.dto.RetornoComMessagem;
+import br.ufscar.dc.dsw.locadora.dto.cliente.DadosAtualizacaoCliente;
+import br.ufscar.dc.dsw.locadora.dto.cliente.DadosCadastroCliente;
+import br.ufscar.dc.dsw.locadora.dto.cliente.DadosDetalhamentoCliente;
+import br.ufscar.dc.dsw.locadora.service.spec.IClienteService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+@RestController
+@RequestMapping("/clientes")
+public class ClienteController {
+
+  @Autowired
+  private IClienteService service;
+
+  @Autowired
+  private ResourceBundle messageBundle;
+
+  private String getMessage(String key, Locale locale) {
+    return ResourceBundle.getBundle(messageBundle.getBaseBundleName(), locale).getString(key);
+  }
+
+  @GetMapping
+  public ResponseEntity<Page<DadosDetalhamentoCliente>> listar(@PageableDefault(size = 10, sort = {"username"}) Pageable pageable) {
+    Page<DadosDetalhamentoCliente> clientes = service.findAll(pageable).map(DadosDetalhamentoCliente::new);
+
+    return ResponseEntity.ok().body(clientes);
+  }
+
+  @PostMapping
+  @Transactional
+  public ResponseEntity<RetornoComMessagem> cadastrar(@RequestBody @Valid DadosCadastroCliente dados, UriComponentsBuilder uriBuilder, final Locale locale) {
+    Cliente cliente = service.save(dados);
+    URI uri = uriBuilder.path("/medicos/{id}").buildAndExpand(cliente.getId()).toUri();
+
+    String message = getMessage("clientes.create.success", locale);
+
+    return ResponseEntity.created(uri).body(new RetornoComMessagem(message, new DadosDetalhamentoCliente(cliente)));
+  }
+
+  @PutMapping("/{id}")
+  @Transactional
+  public ResponseEntity<RetornoComMessagem> atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoCliente dados, final Locale locale) {
+    Cliente cliente = service.update(id, dados);
+    String message = getMessage("clientes.update.success", locale);
+
+    return ResponseEntity.ok().body(new RetornoComMessagem(message, new DadosDetalhamentoCliente(cliente)));
+  }
+
+
+  @DeleteMapping("/{id}")
+  @Transactional
+  public ResponseEntity<RetornoComMessagem> deletar(@PathVariable Long id, final Locale locale) {
+    Cliente cliente = service.delete(id);
+
+    String message = getMessage("clientes.delete.success", locale);
+
+    return ResponseEntity.ok().body(new RetornoComMessagem(message, new DadosDetalhamentoCliente(cliente)));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<DadosDetalhamentoCliente> detalhar(@PathVariable Long id) {
+    Cliente cliente = service.findById(id);
+
+    return ResponseEntity.ok().body(new DadosDetalhamentoCliente(cliente));
+  }
+}

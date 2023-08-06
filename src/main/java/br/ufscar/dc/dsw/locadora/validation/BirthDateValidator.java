@@ -1,9 +1,9 @@
 package br.ufscar.dc.dsw.locadora.validation;
 
-import org.springframework.stereotype.Component;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
 
 @Component
@@ -11,7 +11,7 @@ public class BirthDateValidator implements ConstraintValidator<BirthDate, LocalD
 
   @Override
   public boolean isValid(LocalDate birthDate, ConstraintValidatorContext context) {
-    if (birthDate == null) return false;
+    if (birthDate == null) return true;
 
     LocalDate today = LocalDate.now();
     return birthDate.isBefore(today);

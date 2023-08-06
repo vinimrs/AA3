@@ -12,9 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestControllerAdvice
 public class TratadorDeErros {
@@ -27,7 +25,27 @@ public class TratadorDeErros {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity tratarErro400(MethodArgumentNotValidException ex) {
     List<FieldError> erros = ex.getFieldErrors();
-    return ResponseEntity.badRequest().body(erros.stream().map(DadosErroValidacao::new).toList());
+
+    List<DadosErroValidacao> messages = new ArrayList<>(erros.size());
+
+    erros.forEach(erro -> {
+      // Se houver mais de uma mensagem de erro para o mesmo campo, adiciona a mensagem na lista de mensagens
+      if (messages.stream().anyMatch(dadosErroValidacao -> Objects.equals(dadosErroValidacao.field(), erro.getField()))) {
+        DadosErroValidacao dados = messages.stream().filter(dadosErroValidacao ->
+            Objects.equals(dadosErroValidacao.field(), erro.getField())
+        ).findFirst().get();
+
+        messages.remove(dados);
+        List<String> mensagens = dados.messages();
+        String erroMessage = erro.getDefaultMessage();
+        mensagens.add(erroMessage);
+        messages.add(new DadosErroValidacao(erro.getField(), mensagens));
+      } else {
+        messages.add(new DadosErroValidacao(erro));
+      }
+    });
+
+    return ResponseEntity.badRequest().body(messages);
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -37,24 +55,30 @@ public class TratadorDeErros {
 
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity tratarErroValidacao(ConstraintViolationException ex) {
-//    List<String> erros = ex.getConstraintViolations().stream().map(ConstraintViolation::getMessage).toList();
-//    List<Path> campos = ex.getConstraintViolations().stream().map(ConstraintViolation::getPropertyPath).toList();
-//    System.out.println(campos);
 
     Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
 
     System.out.println(constraintViolations);
 
-    Set<DadosErroValidacao> messages = new HashSet<>(constraintViolations.size());
+    List<DadosErroValidacao> messages = new ArrayList<>(constraintViolations.size());
 
     constraintViolations.forEach(constraintViolation -> {
+      // Se houver mais de uma mensagem de erro para o mesmo campo, adiciona a mensagem na lista de mensagens
+      if (messages.stream().anyMatch(dadosErroValidacao -> Objects.equals(dadosErroValidacao.field(), constraintViolation.getPropertyPath().toString()))) {
+        DadosErroValidacao dados = messages.stream().filter(dadosErroValidacao ->
+            Objects.equals(dadosErroValidacao.field(), constraintViolation.getPropertyPath().toString())
+        ).findFirst().get();
+        messages.remove(dados);
+
+        List<String> mensagens = dados.messages();
+        mensagens.add(constraintViolation.getMessage());
+        messages.add(new DadosErroValidacao(constraintViolation.getPropertyPath().toString(),
+            mensagens));
+      }
+
       messages.add(new DadosErroValidacao(constraintViolation.getPropertyPath().toString(),
-          constraintViolation.getMessage()));
+          Collections.singletonList(constraintViolation.getMessage())));
     });
-    //    messages.addAll(constraintViolations.stream()
-//        .map(constraintViolation -> String.format("%s value '%s' %s", constraintViolation.getPropertyPath(),
-//            constraintViolation.getInvalidValue(), constraintViolation.getMessage()))
-//        .toList());
 
     return ResponseEntity.badRequest().body(messages);
   }
@@ -84,9 +108,9 @@ public class TratadorDeErros {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " + ex.getLocalizedMessage());
   }
 
-  private record DadosErroValidacao(String field, String message) {
+  private record DadosErroValidacao(String field, List<String> messages) {
     public DadosErroValidacao(FieldError erro) {
-      this(erro.getField(), erro.getDefaultMessage());
+      this(erro.getField(), new ArrayList<>(Collections.singletonList(erro.getDefaultMessage())));
     }
   }
 
