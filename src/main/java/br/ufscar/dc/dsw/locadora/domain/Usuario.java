@@ -1,6 +1,6 @@
 package br.ufscar.dc.dsw.locadora.domain;
 
-import br.ufscar.dc.dsw.locadora.validation.Name;
+import br.ufscar.dc.dsw.locadora.validation.formats.Name;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueEmail;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueUsername;
 import jakarta.persistence.*;

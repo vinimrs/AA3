@@ -18,21 +18,21 @@ public class Admin extends Usuario {
     this.role = "ROLE_ADMIN";
   }
 
-  public void atualizar(DadosAtualizacaoAdmin admin) {
-    if (admin.username() != null) {
-      this.setUsername(admin.username());
+  public void atualizar(DadosAtualizacaoAdmin dados) {
+    if (dados.username() != null && !dados.username().isBlank()) {
+      this.setUsername(dados.username());
     }
 
-    if (admin.email() != null) {
-      this.setEmail(admin.email());
+    if (dados.email() != null && !dados.email().isBlank()) {
+      this.setEmail(dados.email());
     }
 
-    if (admin.password() != null) {
-      this.setPassword(admin.password());
+    if (dados.password() != null && !dados.password().isBlank()) {
+      this.setPassword(dados.password());
     }
 
-    if (admin.name() != null) {
-      this.setName(admin.name());
+    if (dados.name() != null && !dados.name().isBlank()) {
+      this.setName(dados.name());
     }
 
   }

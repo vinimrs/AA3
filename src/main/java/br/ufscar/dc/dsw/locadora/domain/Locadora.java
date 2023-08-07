@@ -61,27 +61,27 @@ public class Locadora extends Usuario {
   }
 
   public void atualizar(DadosAtualizacaoLocadora dados) {
-    if (dados.username() != null) {
+    if (dados.username() != null && !dados.username().isBlank()) {
       this.setUsername(dados.username());
     }
 
-    if (dados.password() != null) {
+    if (dados.password() != null && !dados.password().isBlank()) {
       this.setPassword(dados.password());
     }
 
-    if (dados.name() != null) {
+    if (dados.name() != null && !dados.name().isBlank()) {
       this.setName(dados.name());
     }
 
-    if (dados.email() != null) {
+    if (dados.email() != null && !dados.email().isBlank()) {
       this.setEmail(dados.email());
     }
 
-    if (dados.cnpj() != null) {
+    if (dados.cnpj() != null && !dados.cnpj().isBlank()) {
       this.cnpj = dados.cnpj();
     }
 
-    if (dados.city() != null) {
+    if (dados.city() != null && !dados.city().isBlank()) {
       this.city = dados.city();
     }
   }

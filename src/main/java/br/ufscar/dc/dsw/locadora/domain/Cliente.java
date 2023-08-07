@@ -2,7 +2,7 @@ package br.ufscar.dc.dsw.locadora.domain;
 
 import br.ufscar.dc.dsw.locadora.dto.cliente.DadosAtualizacaoCliente;
 import br.ufscar.dc.dsw.locadora.dto.cliente.DadosCadastroCliente;
-import br.ufscar.dc.dsw.locadora.validation.BirthDate;
+import br.ufscar.dc.dsw.locadora.validation.formats.BirthDate;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueCPF;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -46,8 +46,8 @@ public class Cliente extends Usuario {
     this.role = "ROLE_CLIENTE";
     this.cpf = dados.cpf();
     this.phoneNumber = dados.phoneNumber();
-    this.sex = dados.sex();
-    this.birthDate = dados.birthDate();
+    this.sex = Sexo.valueOf(dados.sex());
+    this.birthDate = LocalDate.parse(dados.birthDate());
   }
 
   public String getCpf() {
@@ -91,37 +91,38 @@ public class Cliente extends Usuario {
   }
 
   public void atualizar(DadosAtualizacaoCliente dados) {
-    if (dados.password() != null) {
+    if (dados.username() != null && !dados.username().isBlank()) {
+      this.setUsername(dados.username());
+    }
+
+    if (dados.password() != null && !dados.password().isBlank()) {
       this.setPassword(dados.password());
     }
 
-    if (dados.name() != null) {
+    if (dados.name() != null && !dados.name().isBlank()) {
       this.setName(dados.name());
     }
 
-    if (dados.email() != null) {
+    if (dados.email() != null && !dados.email().isBlank()) {
       this.setEmail(dados.email());
     }
 
-    if (dados.cpf() != null) {
+    if (dados.cpf() != null && !dados.cpf().isBlank()) {
       this.setCpf(dados.cpf());
     }
 
-    if (dados.phoneNumber() != null) {
+    if (dados.phoneNumber() != null && !dados.phoneNumber().isBlank()) {
       this.setPhoneNumber(dados.phoneNumber());
     }
 
-    if (dados.sex() != null) {
-      this.setSex(dados.sex());
+    if (dados.sex() != null && !dados.sex().isBlank()) {
+      this.setSex(Sexo.valueOf(dados.sex()));
     }
 
     if (dados.birthDate() != null) {
-      this.setBirthDate(dados.birthDate());
+      this.setBirthDate(LocalDate.parse(dados.birthDate()));
     }
 
-    if (dados.username() != null) {
-      this.setUsername(dados.username());
-    }
 
   }
 }

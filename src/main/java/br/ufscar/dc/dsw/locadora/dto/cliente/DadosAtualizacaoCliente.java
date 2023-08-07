@@ -1,10 +1,9 @@
 package br.ufscar.dc.dsw.locadora.dto.cliente;
 
-import br.ufscar.dc.dsw.locadora.domain.Sexo;
-import br.ufscar.dc.dsw.locadora.validation.BirthDate;
-import br.ufscar.dc.dsw.locadora.validation.Name;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import br.ufscar.dc.dsw.locadora.validation.formats.BirthDate;
+import br.ufscar.dc.dsw.locadora.validation.formats.BirthDateField;
+import br.ufscar.dc.dsw.locadora.validation.formats.Name;
+import br.ufscar.dc.dsw.locadora.validation.formats.Sex;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
@@ -27,9 +26,9 @@ public record DadosAtualizacaoCliente(
     @Size(min = 14, max = 14, message = "{Size.cliente.phone}")
     String phoneNumber,
 
-    @Enumerated(EnumType.STRING)
-    Sexo sex,
+    @Sex(message = "{Sex.cliente}")
+    String sex,
 
-    @BirthDate(message = "{BirthDate.cliente}")
-    LocalDate birthDate) {
+    @BirthDateField(message = "{BirthDate.cliente}")
+    String birthDate) {
 }

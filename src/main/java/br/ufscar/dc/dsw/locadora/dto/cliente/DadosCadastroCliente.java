@@ -1,12 +1,12 @@
 package br.ufscar.dc.dsw.locadora.dto.cliente;
 
-import br.ufscar.dc.dsw.locadora.domain.Sexo;
-import br.ufscar.dc.dsw.locadora.validation.BirthDate;
-import br.ufscar.dc.dsw.locadora.validation.Name;
+import br.ufscar.dc.dsw.locadora.validation.formats.BirthDate;
+import br.ufscar.dc.dsw.locadora.validation.formats.BirthDateField;
+import br.ufscar.dc.dsw.locadora.validation.formats.Name;
+import br.ufscar.dc.dsw.locadora.validation.formats.Sex;
+import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueCPF;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueEmail;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueUsername;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,6 +31,7 @@ public record DadosCadastroCliente(
     @Email
     String email,
 
+    @UniqueCPF(message = "{Unique.cliente.CPF}")
     @NotBlank
     @Size(min = 15, max = 15, message = "{Size.cliente.CPF}")
     String cpf,
@@ -39,11 +40,11 @@ public record DadosCadastroCliente(
     @Size(min = 14, max = 14, message = "{Size.cliente.phone}")
     String phoneNumber,
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    Sexo sex,
+    @Sex(message = "{Sex.cliente}")
+    @NotBlank
+    String sex,
 
+    @BirthDateField(message = "{BirthDate.cliente}")
     @NotNull
-    @BirthDate(message = "{BirthDate.cliente}")
-    LocalDate birthDate) {
+    String birthDate) {
 }

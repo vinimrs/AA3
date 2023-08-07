@@ -1,6 +1,6 @@
 package br.ufscar.dc.dsw.locadora.dto.admin;
 
-import br.ufscar.dc.dsw.locadora.validation.Name;
+import br.ufscar.dc.dsw.locadora.validation.formats.Name;
 import jakarta.validation.constraints.Email;
 
 public record DadosAtualizacaoAdmin(
