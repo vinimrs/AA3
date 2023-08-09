@@ -1,4 +1,4 @@
-package br.ufscar.dc.dsw.locadora.validation.formats;
+package br.ufscar.dc.dsw.locadora.validation.formats.cliente;
 
 import br.ufscar.dc.dsw.locadora.domain.Sexo;
 import jakarta.validation.ConstraintValidator;
@@ -10,8 +10,7 @@ public class SexValidator implements ConstraintValidator<Sex, String> {
 
   @Override
   public boolean isValid(String sex, ConstraintValidatorContext context) {
-    if (sex == null) return true; // Ignoramos se o campo é nulo em requisições de atualização
-    if (sex.isBlank()) return false;
+    if (sex == null || sex.isBlank()) return true; // Ignoramos se o campo é nulo em requisições de atualização
 
     try {
       Sexo.valueOf(sex);

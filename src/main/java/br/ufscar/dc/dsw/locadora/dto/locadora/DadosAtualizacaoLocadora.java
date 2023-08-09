@@ -1,8 +1,8 @@
 package br.ufscar.dc.dsw.locadora.dto.locadora;
 
-import br.ufscar.dc.dsw.locadora.validation.formats.Name;
+import br.ufscar.dc.dsw.locadora.validation.formats.locadora.CNPJ;
+import br.ufscar.dc.dsw.locadora.validation.formats.usuario.Name;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 
 public record DadosAtualizacaoLocadora(
     String username,
@@ -15,7 +15,7 @@ public record DadosAtualizacaoLocadora(
     @Email
     String email,
 
-    @Size(min = 18, max = 18, message = "{Size.locadora.CNPJ}")
+    @CNPJ(message = "{Size.locadora.CNPJ}")
     String cnpj,
 
     String city) {

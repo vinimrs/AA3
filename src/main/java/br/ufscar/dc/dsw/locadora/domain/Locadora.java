@@ -2,10 +2,10 @@ package br.ufscar.dc.dsw.locadora.domain;
 
 import br.ufscar.dc.dsw.locadora.dto.locadora.DadosAtualizacaoLocadora;
 import br.ufscar.dc.dsw.locadora.dto.locadora.DadosCadastroLocadora;
+import br.ufscar.dc.dsw.locadora.validation.formats.locadora.CNPJ;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueCNPJ;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class Locadora extends Usuario {
 
   @UniqueCNPJ(message = "{Unique.locadora.CNPJ}")
   @NotBlank
-  @Size(min = 18, max = 18, message = "{Size.locadora.CNPJ}")
+  @CNPJ(message = "{Size.locadora.CNPJ}")
   @Column(unique = true)
   private String cnpj;
 

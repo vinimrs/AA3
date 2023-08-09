@@ -2,14 +2,16 @@ package br.ufscar.dc.dsw.locadora.domain;
 
 import br.ufscar.dc.dsw.locadora.dto.cliente.DadosAtualizacaoCliente;
 import br.ufscar.dc.dsw.locadora.dto.cliente.DadosCadastroCliente;
-import br.ufscar.dc.dsw.locadora.validation.formats.BirthDate;
+import br.ufscar.dc.dsw.locadora.validation.formats.cliente.BirthDate;
+import br.ufscar.dc.dsw.locadora.validation.formats.cliente.CPF;
+import br.ufscar.dc.dsw.locadora.validation.formats.cliente.PhoneNumber;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueCPF;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -18,12 +20,12 @@ public class Cliente extends Usuario {
 
   @UniqueCPF(message = "{Unique.cliente.CPF}")
   @NotBlank
-  @Size(min = 15, max = 15, message = "{Size.cliente.CPF}")
+  @CPF(message = "{Size.cliente.CPF}")
   @Column(unique = true)
   private String cpf;
 
   @NotBlank
-  @Size(min = 14, max = 14, message = "{Size.cliente.phone}")
+  @PhoneNumber(message = "{Size.cliente.phone}")
   private String phoneNumber;
 
   @NotNull
@@ -32,7 +34,7 @@ public class Cliente extends Usuario {
 
   @BirthDate(message = "{BirthDate.cliente}")
   @Column(columnDefinition = "Date")
-  private LocalDate birthDate;
+  private LocalDate birthdate;
 
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "client")
   private List<Locacao> locacoes;
@@ -47,7 +49,7 @@ public class Cliente extends Usuario {
     this.cpf = dados.cpf();
     this.phoneNumber = dados.phoneNumber();
     this.sex = Sexo.valueOf(dados.sex());
-    this.birthDate = LocalDate.parse(dados.birthDate());
+    this.birthdate = LocalDate.parse(dados.birthdate(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
   }
 
   public String getCpf() {
@@ -74,12 +76,12 @@ public class Cliente extends Usuario {
     this.sex = sex;
   }
 
-  public LocalDate getBirthDate() {
-    return birthDate;
+  public LocalDate getBirthdate() {
+    return birthdate;
   }
 
-  public void setBirthDate(LocalDate birthDate) {
-    this.birthDate = birthDate;
+  public void setBirthdate(LocalDate birthdate) {
+    this.birthdate = birthdate;
   }
 
   public List<Locacao> getLocacoes() {
@@ -119,8 +121,8 @@ public class Cliente extends Usuario {
       this.setSex(Sexo.valueOf(dados.sex()));
     }
 
-    if (dados.birthDate() != null) {
-      this.setBirthDate(LocalDate.parse(dados.birthDate()));
+    if (dados.birthdate() != null && !dados.birthdate().isBlank()) {
+      this.setBirthdate(LocalDate.parse(dados.birthdate(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 
 

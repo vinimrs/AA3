@@ -1,4 +1,4 @@
-package br.ufscar.dc.dsw.locadora.validation.formats;
+package br.ufscar.dc.dsw.locadora.validation.formats.cliente;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -11,11 +11,11 @@ public class BirthDateFieldValidator implements ConstraintValidator<BirthDateFie
 
   @Override
   public boolean isValid(String fieldValue, ConstraintValidatorContext context) {
-    if (fieldValue == null) return true; // Ignoramos se o campo é nulo em requisições de atualização
-    if (fieldValue.isBlank()) return false;
+    if (fieldValue == null || fieldValue.isBlank())
+      return true; // Ignoramos se o campo é nulo em requisições de atualização
 
     try {
-      LocalDate birthDate = LocalDate.parse(fieldValue);
+      LocalDate birthDate = LocalDate.parse(fieldValue, BirthDateField.formatter);
       LocalDate today = LocalDate.now();
       return birthDate.isBefore(today);
     } catch (Exception e) {

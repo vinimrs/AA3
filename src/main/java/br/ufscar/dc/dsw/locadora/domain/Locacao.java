@@ -4,10 +4,10 @@ import br.ufscar.dc.dsw.locadora.dto.locacao.DadosCadastroLocacao;
 import br.ufscar.dc.dsw.locadora.validation.classlevel.ValidLocacao;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @ValidLocacao(message = "{ValidLocacao.locacao}")
 @Entity
@@ -20,7 +20,6 @@ public class Locacao extends AbstractEntity<Long> {
   private LocalTime hour;
 
   @NotNull
-  @DateTimeFormat(pattern = "yyyy-MM-dd")
   @Column(nullable = false, columnDefinition = "Date", name = "date")
   private LocalDate date;
 
@@ -35,8 +34,8 @@ public class Locacao extends AbstractEntity<Long> {
   private Cliente client;
 
   public Locacao(DadosCadastroLocacao locacao, Locadora locadora, Cliente cliente) {
-    this.hour = locacao.hour();
-    this.date = locacao.date();
+    this.hour = LocalTime.parse(locacao.hour(), DateTimeFormatter.ofPattern("HH:00"));
+    this.date = LocalDate.parse(locacao.date(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     this.rentalCompany = locadora;
     this.client = cliente;
   }

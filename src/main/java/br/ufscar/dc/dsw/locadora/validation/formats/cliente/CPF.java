@@ -1,4 +1,4 @@
-package br.ufscar.dc.dsw.locadora.validation.formats;
+package br.ufscar.dc.dsw.locadora.validation.formats.cliente;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -8,11 +8,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = SexValidator.class)
+@Constraint(validatedBy = CPFValidator.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Sex {
-  String message() default "Input a valid sex.";
+public @interface CPF {
+  String message() default "Input a valid cpf.";
 
   Class<?>[] groups() default {};
 

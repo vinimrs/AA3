@@ -1,12 +1,12 @@
 package br.ufscar.dc.dsw.locadora.dto.locadora;
 
-import br.ufscar.dc.dsw.locadora.validation.formats.Name;
+import br.ufscar.dc.dsw.locadora.validation.formats.locadora.CNPJ;
+import br.ufscar.dc.dsw.locadora.validation.formats.usuario.Name;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueCNPJ;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueEmail;
 import br.ufscar.dc.dsw.locadora.validation.uniques.UniqueUsername;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 public record DadosCadastroLocadora(
     @UniqueUsername(message = "{Unique.user.username}")
@@ -27,7 +27,7 @@ public record DadosCadastroLocadora(
 
     @UniqueCNPJ(message = "{Unique.locadora.CNPJ}")
     @NotBlank
-    @Size(min = 18, max = 18, message = "{Size.locadora.CNPJ}")
+    @CNPJ(message = "{Size.locadora.CNPJ}")
     String cnpj,
 
     @NotBlank

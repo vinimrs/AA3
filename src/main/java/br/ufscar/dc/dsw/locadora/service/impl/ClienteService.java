@@ -55,7 +55,7 @@ public class ClienteService implements IClienteService {
     return cliente;
   }
 
-  @Override
+  @Transactional(readOnly = true)
   public Cliente update(Long id, DadosAtualizacaoCliente dados) {
     Cliente cliente = repository.findById(id).orElse(null);
 

@@ -1,4 +1,4 @@
-package br.ufscar.dc.dsw.locadora.validation.formats;
+package br.ufscar.dc.dsw.locadora.validation.formats.usuario;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -15,12 +15,8 @@ public class NameValidator implements ConstraintValidator<Name, String> {
      * (?: [a-zA-Z]+){0,2} - 0 to 2 occurrences of a space followed with one or more ASCII letters
      * $ - end of string.
      */
-    if (name == null) {
-      return true;
-    }
-    if (name.isBlank()) {
-      return false;
-    }
+    if (name == null || name.isBlank()) return true; // Ignoramos se o campo é nulo em requisições de atualização
+
 
     return name.matches("^[a-zA-Zà-úÀ-Ú]{3,}(?: [a-zA-Zà-úÀ-Ú]+){1,}$");
   }

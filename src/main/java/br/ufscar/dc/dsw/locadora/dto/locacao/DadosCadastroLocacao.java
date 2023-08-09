@@ -1,20 +1,19 @@
 package br.ufscar.dc.dsw.locadora.dto.locacao;
 
 import br.ufscar.dc.dsw.locadora.validation.classlevel.ValidCadastroLocacao;
+import br.ufscar.dc.dsw.locadora.validation.formats.locacao.LocacaoDate;
+import br.ufscar.dc.dsw.locadora.validation.formats.locacao.LocacaoHour;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @ValidCadastroLocacao(message = "{ValidLocacao.locacao}")
 public record DadosCadastroLocacao(
+    @LocacaoHour(message = "{Hour.locacao}")
     @NotNull
-    LocalTime hour,
+    String hour,
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @LocacaoDate(message = "{Date.locacao}")
     @NotNull
-    LocalDate date,
+    String date,
 
     @NotNull
     Long rentalCompanyId,
