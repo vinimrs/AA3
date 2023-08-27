@@ -93,4 +93,26 @@ public class LocacaoService implements ILocacaoService {
     repository.deleteById(id);
     return locacao;
   }
+
+  @Override
+  public Page<Locacao> findAllByLocadora(Long id, Pageable pageable) {
+    Locadora locadora = rentalCompanyRepository.findById(id).orElse(null);
+
+    if (locadora == null) {
+      throw new EntityNotFoundException();
+    }
+
+    return repository.findAllByRentalCompany(locadora, pageable);
+  }
+
+  @Override
+  public Page<Locacao> findAllByCliente(Long id, Pageable pageable) {
+    Cliente cliente = clientRepository.findById(id).orElse(null);
+
+    if (cliente == null) {
+      throw new EntityNotFoundException();
+    }
+
+    return repository.findAllByClient(cliente, pageable);
+  }
 }

@@ -8,6 +8,7 @@ import br.ufscar.dc.dsw.locadora.dto.locadora.DadosDetalhamentoLocadora;
 import br.ufscar.dc.dsw.locadora.dto.locadora.DadosListagemCidadesLocadora;
 import br.ufscar.dc.dsw.locadora.service.spec.ILocadoraService;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,7 @@ public class LocadoraController {
   @Autowired
   private ILocadoraService service;
 
+  @Getter
   @Autowired
   private ResourceBundle messageBundle;
 
@@ -82,9 +84,17 @@ public class LocadoraController {
   }
 
   @GetMapping("/cidades")
-  public ResponseEntity<DadosListagemCidadesLocadora> detalhar() {
+  public ResponseEntity<DadosListagemCidadesLocadora> listarCidades() {
     List<String> cidades = service.findAllCities();
 
     return ResponseEntity.ok().body(new DadosListagemCidadesLocadora(cidades));
+  }
+
+  @GetMapping("/cidades/{cidade}")
+  public ResponseEntity<Page<DadosDetalhamentoLocadora>> listarTodasPorCidade(@PathVariable String cidade, @PageableDefault(size = 10, sort = {"username"}) Pageable pageable) {
+    // Não é necessário tratar cidade nula pois, nesse caso, não será mapeado para esse método.
+    Page<DadosDetalhamentoLocadora> locadoras = service.findAllByCity(cidade, pageable).map(DadosDetalhamentoLocadora::new);
+
+    return ResponseEntity.ok().body(locadoras);
   }
 }

@@ -20,4 +20,8 @@ public interface ILocacaoService {
   Locacao save(DadosCadastroLocacao locacao);
 
   Locacao delete(Long id);
+
+  Page<Locacao> findAllByLocadora(Long id, Pageable pageable);
+
+  Page<Locacao> findAllByCliente(Long id, Pageable pageable);
 }

@@ -67,4 +67,18 @@ public class LocacaoController {
 
     return ResponseEntity.ok().body(new DadosDetalhamentoLocacao(locacao));
   }
+
+  @GetMapping("/clientes/{id}")
+  public ResponseEntity<Page<DadosDetalhamentoLocacao>> listarPorCliente(@PathVariable Long id, @PageableDefault(size = 10, sort = {"date"}) Pageable pageable) {
+    Page<DadosDetalhamentoLocacao> locacoes = service.findAllByCliente(id, pageable).map(DadosDetalhamentoLocacao::new);
+
+    return ResponseEntity.ok().body(locacoes);
+  }
+
+  @GetMapping("/locadoras/{id}")
+  public ResponseEntity<Page<DadosDetalhamentoLocacao>> listarPorLocadora(@PathVariable Long id, @PageableDefault(size = 10, sort = {"date"}) Pageable pageable) {
+    Page<DadosDetalhamentoLocacao> locacoes = service.findAllByLocadora(id, pageable).map(DadosDetalhamentoLocacao::new);
+
+    return ResponseEntity.ok().body(locacoes);
+  }
 }
