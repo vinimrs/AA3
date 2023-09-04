@@ -8,7 +8,7 @@
    <img src="https://img.shields.io/github/license/vinimrs/VinChat?color=black" align="center" />
 </h1>
 
-Projeto de implementação de uma aplicação web de um sistema para locações de bicicletas online utilizando as tecnologias **Java Spring Boot para o desenvolvimento de uma API REST**, com objetivo de comtemplar as principais responsabilidades de uma locação de bicicleta explorando e conhecendo melhor como funciona o desenvolvimento de sistemas web.
+Projeto de implementação de uma aplicação web de um sistema para locações de bicicletas online utilizando as tecnologias **Java [Spring Boot] para o desenvolvimento de uma [API REST]**, com objetivo de coNtemplar as principais responsabilidades de uma locação de bicicleta explorando e conhecendo melhor como funciona o desenvolvimento de sistemas web.
 
 <p align="center">
 
@@ -56,6 +56,7 @@ Depois de inicializar você pode testar a API a partir de serviços como o [Post
 ## :zap: Tecnologias
 
 - [Spring Boot]
+- [API REST]
 
 <!--
 ## ✅ Melhorias
@@ -64,4 +65,5 @@ Ideias de melhorias para o projeto:
 -->
 
 [Spring Boot]: https://spring.io/projects/spring-boot
+[API REST]: https://www.redhat.com/pt-br/topics/api/what-is-a-rest-api
 
